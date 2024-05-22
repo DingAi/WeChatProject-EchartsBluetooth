@@ -1,0 +1,30 @@
+<!--index.wxml-->
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+    <view>
+      <button bindtap="openBluetoothAdapter">搜索蓝牙设备</button>
+    </view>
+    <view class="devices_summary">已发现 {{devices.length}} 个外围设备：</view>
+    <scroll-view class="device_list" scroll-y scroll-with-animation>
+      <view wx:for="{{devices}}" wx:key="index" data-device-id="{{item.deviceId}}" data-name="{{item.name || item.localName}}" bindtap="createBLEConnection" class="device_item" hover-class="device_item_hover">
+        <view style="font-size: 16px; color: #333;">{{item.name}}</view>
+        <view style="font-size: 10px">信号强度: {{item.RSSI}}dBm ({{utils.max(0, item.RSSI + 100)}}%)</view>
+        <view style="font-size: 10px">UUID: {{item.deviceId}}</view>
+        <view style="font-size: 10px">Service数量: {{utils.len(item.advertisServiceUUIDs)}}</view>
+      </view>
+    </scroll-view>
+  </view>
+  <view class="connected_info" wx:if="{{connected}}">
+    <view>
+      <text>已连接到 {{name}}</text>
+      <view class="operation">
+        <!-- <button wx:if="{{canWrite}}" size="mini" bindtap="writeBLECharacteristicValue">写数据</button> -->
+        <button size="mini" bindtap="closeBLEConnection">断开连接</button>
+      </view>
+    </view>
+    <view class="chart">
+      获取数据：{{chs[0].value}}
+      <ec-canvas id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ec }}" onInit="onInit"></ec-canvas>
+    </view>
+  </view>
+</scroll-view>
